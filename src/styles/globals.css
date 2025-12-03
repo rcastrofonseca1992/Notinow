@@ -609,12 +609,11 @@
   }
 
   .main-scroll {
-  height: 100dvh;        /* stable viewport height */
-  min-height: 100dvh;    /* ensures no collapse */
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   width: 100%;
+  /* Height is controlled by flex-1 in parent container */
 }
 }
 
