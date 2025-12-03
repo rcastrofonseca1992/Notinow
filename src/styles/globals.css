@@ -593,7 +593,7 @@
     @apply border-border outline-ring/50;
   }
 
-  html, body {
+  html, body, #root {
     height: 100dvh;      /* ensures consistent layout viewport */
     width: 100%;
     overflow: hidden; /* IMPORTANT - Prevents iOS viewport issues */
@@ -609,11 +609,13 @@
   }
 
   .main-scroll {
+  height: 0; /* Force flex-1 to calculate properly */
+  flex: 1 1 0%;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
   width: 100%;
-  /* Height is controlled by flex-1 in parent container */
 }
 }
 

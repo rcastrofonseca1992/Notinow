@@ -19,7 +19,8 @@ interface SafeAreaWrapperProps {
 export const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({ children, className = '' }) => {
   return (
     <div 
-      className={`flex flex-col h-full w-full bg-background overflow-hidden ${className}`}
+      className={`flex flex-col h-screen w-full bg-background overflow-hidden ${className}`}
+      style={{ height: '100dvh' }}
     >
       {children}
     </div>

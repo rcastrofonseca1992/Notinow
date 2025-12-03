@@ -490,7 +490,7 @@ function AppContent() {
       
       {/* SAFE AREA WRAPPER - Replaces previous container */}
       <SafeAreaWrapper>
-        <div className="flex flex-col h-full w-full relative">
+        <div className="flex flex-col h-screen w-full relative" style={{ height: '100dvh' }}>
         {/* Header - Now Static, Outside Scroll View */}
         <header 
           data-pwa-header
