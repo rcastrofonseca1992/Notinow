@@ -1,0 +1,866 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+  --background: #F8F9FA;
+  --foreground: #1E293B;
+  
+  /* Professional spacing */
+  --space-tight: 0.5rem;
+  --space-base: 1rem;
+  --space-relaxed: 2rem;
+  --card: #ffffff;
+  --card-foreground: #1E293B;
+  --popover: #ffffff;
+  --popover-foreground: #1E293B;
+  --primary: #2563EB;
+  --primary-foreground: #ffffff;
+  --secondary: #F1F5F9;
+  --secondary-foreground: #1E293B;
+  --muted: #F1F5F9;
+  --muted-foreground: #64748B;
+  --accent: #2563EB;
+  --accent-foreground: #ffffff;
+  --destructive: #DC2626;
+  --destructive-foreground: #ffffff;
+  --border: #E2E8F0;
+  --input: #E2E8F0;
+  --input-background: #ffffff;
+  --switch-background: #CBD5E1;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: #2563EB;
+  --chart-1: #2563EB;
+  --chart-2: #16A34A;
+  --chart-3: #0D9488;
+  --chart-4: #6366F1;
+  --chart-5: #8B5CF6;
+  --radius: 0.5rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1E293B;
+  --sidebar-primary: #2563EB;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #F1F5F9;
+  --sidebar-accent-foreground: #1E293B;
+  --sidebar-border: #E2E8F0;
+  --sidebar-ring: #2563EB;
+}
+
+.dark {
+  --background: #0F172A;
+  --foreground: #F1F5F9;
+  --card: #1E293B;
+  --card-foreground: #F1F5F9;
+  --popover: #1E293B;
+  --popover-foreground: #F1F5F9;
+  --primary: #3B82F6;
+  --primary-foreground: #ffffff;
+  --secondary: #334155;
+  --secondary-foreground: #F1F5F9;
+  --muted: #334155;
+  --muted-foreground: #94A3B8;
+  --accent: #3B82F6;
+  --accent-foreground: #ffffff;
+  --destructive: #EF4444;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #334155;
+  --ring: #3B82F6;
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --chart-1: #3B82F6;
+  --chart-2: #22C55E;
+  --chart-3: #14B8A6;
+  --chart-4: #818CF8;
+  --chart-5: #A78BFA;
+  --sidebar: #1E293B;
+  --sidebar-foreground: #F1F5F9;
+  --sidebar-primary: #3B82F6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #334155;
+  --sidebar-accent-foreground: #F1F5F9;
+  --sidebar-border: #334155;
+  --sidebar-ring: #3B82F6;
+}
+
+/* ========================================
+ * BED TIME MODE - E-Reader Inspired Theme
+ * Pure OLED black with minimal contrast for comfortable nighttime reading
+ * Optimized for battery savings and eye comfort
+ * ======================================== */
+.bed-time {
+  /* Base colors - Pure black with soft gray text (e-ink style) */
+  --background: #000000;           /* Pure black for OLED power savings */
+  --foreground: #A8A8A8;           /* Soft gray text, minimal contrast (WCAG AA: 10.35:1) */
+  
+  /* Cards and elevated surfaces - Barely visible elevation */
+  --card: #0A0A0A;                 /* Very subtle elevation from background */
+  --card-foreground: #A8A8A8;      /* Same soft gray for consistency */
+  
+  /* Popovers and modals */
+  --popover: #0F0F0F;              /* Slightly more elevated */
+  --popover-foreground: #A8A8A8;
+  
+  /* Primary actions - Muted but visible */
+  --primary: #707070;              /* Muted gray for primary actions */
+  --primary-foreground: #000000;   /* Black text on gray (inverted) */
+  
+  /* Secondary elements */
+  --secondary: #1A1A1A;            /* Very dark gray */
+  --secondary-foreground: #989898; /* Lighter gray for contrast */
+  
+  /* Muted/disabled states */
+  --muted: #151515;                /* Barely visible background */
+  --muted-foreground: #606060;     /* Dimmed text */
+  
+  /* Accent colors - Minimal, calm */
+  --accent: #505050;               /* Subtle accent */
+  --accent-foreground: #C0C0C0;    /* Light gray text on accent */
+  
+  /* Destructive actions - Muted red */
+  --destructive: #804040;          /* Muted dark red */
+  --destructive-foreground: #D0D0D0;
+  
+  /* Borders and inputs - Barely visible */
+  --border: #1A1A1A;               /* Minimal border visibility */
+  --input: #0F0F0F;                /* Input background */
+  --ring: #404040;                 /* Focus ring - subtle */
+  
+  /* Charts - Muted grayscale palette */
+  --chart-1: #808080;
+  --chart-2: #A0A0A0;
+  --chart-3: #909090;
+  --chart-4: #707070;
+  --chart-5: #606060;
+  
+  /* Sidebar */
+  --sidebar: #050505;
+  --sidebar-foreground: #A8A8A8;
+  --sidebar-primary: #707070;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1A1A1A;
+  --sidebar-accent-foreground: #989898;
+  --sidebar-border: #1A1A1A;
+  --sidebar-ring: #404040;
+}
+
+/* Bed Time Mode - Component Specific Overrides */
+.bed-time {
+  /* All text should be soft gray */
+  color: #A8A8A8;
+}
+
+/* Header in bed time mode */
+.bed-time header,
+.bed-time [class*="header"] {
+  background: #000000 !important;
+  border-bottom-color: #1A1A1A !important;
+}
+
+/* Pills and badges in bed time mode */
+.bed-time [class*="badge"],
+.bed-time [class*="pill"],
+.bed-time span[class*="bg-blue"],
+.bed-time span[class*="bg-gray"],
+.bed-time span[class*="bg-indigo"],
+.bed-time span[class*="bg-purple"] {
+  background: #1A1A1A !important;
+  color: #989898 !important;
+  border-color: #2A2A2A !important;
+}
+
+/* Icon backgrounds in bed time mode */
+.bed-time [class*="rounded-lg"][class*="bg-"] > svg,
+.bed-time [class*="rounded-full"][class*="bg-"] > svg {
+  color: #808080 !important;
+}
+
+.bed-time [class*="rounded-lg"][class*="bg-card"],
+.bed-time [class*="rounded-full"][class*="bg-card"] {
+  background: #0F0F0F !important;
+}
+
+/* Cards in bed time mode */
+.bed-time [class*="bg-gray-50"],
+.bed-time [class*="bg-gray-100"],
+.bed-time [class*="bg-blue-50"],
+.bed-time [class*="bg-indigo-50"] {
+  background: #0A0A0A !important;
+  border-color: #1A1A1A !important;
+}
+
+/* Hover states in bed time mode */
+.bed-time button:hover:not(:disabled) [class*="bg-gray-50"],
+.bed-time button:hover:not(:disabled) [class*="bg-gray-100"] {
+  background: #151515 !important;
+}
+
+.bed-time [class*="hover:border-blue"]:hover {
+  border-color: #2A2A2A !important;
+}
+
+.bed-time [class*="hover:bg-blue"]:hover {
+  background: #151515 !important;
+}
+
+/* Toggle switches in bed time mode */
+.bed-time [class*="bg-blue-600"] {
+  background: #505050 !important;
+}
+
+.bed-time [class*="bg-gray-300"] {
+  background: #1A1A1A !important;
+}
+
+/* Full Articles Toggle - Enhanced visibility in bed time mode */
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="true"],
+.bed-time button[aria-pressed="true"][aria-label*="full"],
+.bed-time button[aria-pressed="true"][aria-label*="articles"] {
+  background: #505050 !important;
+  border: 1px solid #707070 !important;
+}
+
+/* "All" button selected - No background */
+.bed-time button[aria-pressed="true"][aria-label*="all"] {
+  background: transparent !important;
+  border: 1px solid #707070 !important;
+}
+
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="false"],
+.bed-time button[aria-pressed="false"][aria-label*="all"],
+.bed-time button[aria-pressed="false"][aria-label*="articles"] {
+  background: #1A1A1A !important;
+  border: 1px solid #2A2A2A !important;
+}
+
+/* "Full" button not selected - No border */
+.bed-time button[aria-pressed="false"][aria-label*="full"] {
+  background: #1A1A1A !important;
+  border: none !important;
+}
+
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="true"] span,
+.bed-time button[aria-pressed="true"][aria-label*="full"] span,
+.bed-time button[aria-pressed="true"][aria-label*="articles"] span,
+.bed-time button[aria-pressed="true"][aria-label*="all"] span,
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="true"] svg,
+.bed-time button[aria-pressed="true"][aria-label*="full"] svg {
+  color: #E0E0E0 !important;
+}
+
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="false"] span,
+.bed-time button[aria-pressed="false"][aria-label*="full"] span,
+.bed-time button[aria-pressed="false"][aria-label*="articles"] span,
+.bed-time [class*="FullArticlesToggle"] button[aria-pressed="false"] svg,
+.bed-time button[aria-pressed="false"][aria-label*="full"] svg {
+  color: #808080 !important;
+}
+
+/* Icons in bed time mode */
+.bed-time svg {
+  color: #808080;
+}
+
+.bed-time [class*="text-blue"] svg,
+.bed-time [class*="text-yellow"] svg,
+.bed-time [class*="text-indigo"] svg,
+.bed-time [class*="text-purple"] svg {
+  color: #808080 !important;
+}
+
+/* Selected state icons */
+.bed-time svg.lucide-check,
+.bed-time [class*="bg-blue-600"][class*="rounded-full"] {
+  background: #505050 !important;
+}
+
+/* Gradients in bed time mode */
+.bed-time [class*="from-blue"],
+.bed-time [class*="to-blue"],
+.bed-time [class*="from-indigo"],
+.bed-time [class*="to-indigo"] {
+  background: #0A0A0A !important;
+  border-color: #1A1A1A !important;
+}
+
+/* Text colors in bed time mode */
+.bed-time [class*="text-blue"],
+.bed-time [class*="text-indigo"],
+.bed-time [class*="text-purple"],
+.bed-time [class*="text-yellow"],
+.bed-time [class*="text-green"] {
+  color: #989898 !important;
+}
+
+.bed-time [class*="text-gray-900"] {
+  color: #A8A8A8 !important;
+}
+
+.bed-time [class*="text-gray-700"] {
+  color: #989898 !important;
+}
+
+.bed-time [class*="text-gray-600"] {
+  color: #808080 !important;
+}
+
+.bed-time [class*="text-gray-500"] {
+  color: #707070 !important;
+}
+
+.bed-time [class*="text-gray-400"] {
+  color: #606060 !important;
+}
+
+/* Article cards in bed time mode */
+.bed-time article,
+.bed-time [class*="article"] {
+  background: #0A0A0A !important;
+  border-color: #1A1A1A !important;
+}
+
+/* Full Article pill in article cards - Pure black background */
+.bed-time article span[class*="bg-"],
+.bed-time article span[class*="px-"],
+.bed-time [class*="article"] span[class*="bg-"],
+.bed-time [class*="article"] span[class*="px-"],
+.bed-time article span[class*="uppercase"],
+.bed-time [class*="article"] span[class*="uppercase"] {
+  background: #000000 !important;
+  color: #808080 !important;
+  border-color: #1A1A1A !important;
+}
+
+/* Full Article indicator badge - Pure black background */
+.bed-time article div[class*="rounded-full"][class*="backdrop-blur"],
+.bed-time article div[class*="absolute"][class*="bottom-"] div[class*="rounded-full"] {
+  background: #000000 !important;
+  color: #808080 !important;
+}
+
+.bed-time article div[class*="rounded-full"] svg {
+  color: #808080 !important;
+}
+
+/* Buttons in bed time mode */
+.bed-time button {
+  color: #989898;
+}
+
+.bed-time button:hover:not(:disabled) {
+  background: #151515;
+}
+
+/* Share and Save buttons - Pure black background */
+.bed-time button[aria-label*="Share"],
+.bed-time button[aria-label*="share"],
+.bed-time button[aria-label*="Save"],
+.bed-time button[aria-label*="save"],
+.bed-time button[aria-label*="Bookmark"],
+.bed-time button[aria-label*="bookmark"] {
+  background: #000000 !important;
+  border-color: #1A1A1A !important;
+}
+
+.bed-time button[aria-label*="Share"]:hover,
+.bed-time button[aria-label*="share"]:hover,
+.bed-time button[aria-label*="Save"]:hover,
+.bed-time button[aria-label*="save"]:hover,
+.bed-time button[aria-label*="Bookmark"]:hover,
+.bed-time button[aria-label*="bookmark"]:hover {
+  background: #0A0A0A !important;
+}
+
+/* Action buttons in articles */
+.bed-time article button,
+.bed-time [class*="article"] button {
+  background: #000000 !important;
+  border-color: #1A1A1A !important;
+}
+
+.bed-time article button:hover,
+.bed-time [class*="article"] button:hover {
+  background: #0A0A0A !important;
+}
+
+/* Icon buttons with rounded backgrounds */
+.bed-time button[class*="rounded-full"],
+.bed-time button[class*="rounded-lg"] {
+  background: #000000 !important;
+}
+
+.bed-time button[class*="rounded-full"]:hover,
+.bed-time button[class*="rounded-lg"]:hover {
+  background: #0A0A0A !important;
+}
+
+/* Disabled elements in bed time mode */
+.bed-time [disabled],
+.bed-time [class*="opacity-50"] {
+  opacity: 0.4 !important;
+}
+
+/* Skeleton loading states in bed time mode */
+.bed-time [class*="animate-pulse"] {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite !important;
+}
+
+.bed-time [class*="bg-gray-200"],
+.bed-time [class*="bg-gray-800"] {
+  background: #0A0A0A !important;
+}
+
+.bed-time [class*="border-gray-100"],
+.bed-time [class*="border-gray-800"] {
+  border-color: #1A1A1A !important;
+}
+
+/* Topic Navigation - Category filters in bed time mode */
+.bed-time nav[aria-label*="topics"] button[aria-current="page"],
+.bed-time nav button[aria-current="page"] {
+  background: #505050 !important;
+  border: 1px solid #707070 !important;
+  color: #E0E0E0 !important;
+}
+
+.bed-time nav[aria-label*="topics"] button[aria-current="page"] span,
+.bed-time nav button[aria-current="page"] span {
+  color: #E0E0E0 !important;
+}
+
+.bed-time nav[aria-label*="topics"] button:not([aria-current="page"]),
+.bed-time nav button:not([aria-current="page"]) {
+  background: #0A0A0A !important;
+  border: 1px solid #1A1A1A !important;
+  color: #808080 !important;
+}
+
+.bed-time nav[aria-label*="topics"] button:not([aria-current="page"]) span,
+.bed-time nav button:not([aria-current="page"]) span {
+  color: #808080 !important;
+}
+
+.bed-time nav[aria-label*="topics"] button:not([aria-current="page"]):hover,
+.bed-time nav button:not([aria-current="page"]):hover {
+  background: #151515 !important;
+  color: #989898 !important;
+}
+
+/* Borders in bed time mode */
+.bed-time [class*="border-gray"],
+.bed-time [class*="border-blue"] {
+  border-color: #1A1A1A !important;
+}
+
+/* Dividers in bed time mode */
+.bed-time [class*="border-t"],
+.bed-time [class*="border-b"],
+.bed-time hr {
+  border-color: #1A1A1A !important;
+}
+
+/* Loading states in bed time mode */
+.bed-time [class*="animate-spin"] {
+  border-color: #505050 !important;
+  border-top-color: transparent !important;
+}
+
+/* Scrollbars in bed time mode */
+.bed-time ::-webkit-scrollbar {
+  display: none;
+}
+
+.bed-time {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.bed-time ::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.bed-time ::-webkit-scrollbar-thumb:hover {
+  display: none;
+}
+
+/* Input fields in bed time mode */
+.bed-time input,
+.bed-time textarea,
+.bed-time select {
+  background: #0F0F0F !important;
+  border-color: #1A1A1A !important;
+  color: #A8A8A8 !important;
+}
+
+.bed-time input::placeholder,
+.bed-time textarea::placeholder {
+  color: #606060 !important;
+}
+
+/* Links in bed time mode */
+.bed-time a {
+  color: #989898;
+}
+
+.bed-time a:hover {
+  color: #A8A8A8;
+}
+
+/* Shadows should be invisible in bed time mode */
+.bed-time [class*="shadow"] {
+  box-shadow: none !important;
+}
+
+/* Images in bed time mode - Dimmed with dark overlay for eye comfort */
+.bed-time img,
+.bed-time [class*="ImageWithFallback"] img {
+  filter: brightness(0.4) contrast(0.9);
+  opacity: 0.8;
+}
+
+/* Image containers - Add subtle dark overlay */
+.bed-time figure,
+.bed-time [class*="aspect-ratio"],
+.bed-time [class*="relative"]:has(img) {
+  position: relative;
+}
+
+.bed-time figure::after,
+.bed-time [class*="aspect-ratio"]::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ensure article images are also dimmed */
+.bed-time article img,
+.bed-time .prose img {
+  filter: brightness(0.4) contrast(0.9);
+  opacity: 0.8;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html, body {
+    height: 100dvh;      /* ensures consistent layout viewport */
+    width: 100%;
+    overflow: hidden; /* IMPORTANT - Prevents iOS viewport issues */
+    overscroll-behavior-y: none; /* Disables pull-to-refresh at the root level */
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    padding-top: env(safe-area-inset-top); /* Body handles safe-area */
+    position: fixed; /* The "Twitter Hack" - locks body completely */
+    inset: 0;
+  }
+
+  .main-scroll {
+  height: 100dvh;        /* stable viewport height */
+  min-height: 100dvh;    /* ensures no collapse */
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  width: 100%;
+}
+}
+
+/**
+ * Base typography. This is not applied to elements which have an ancestor with a Tailwind text class.
+ */
+@layer base {
+  :where(:not(:has([class*=' text-']), :not(:has([class^='text-'])))) {
+    h1 {
+      font-size: var(--text-2xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h2 {
+      font-size: var(--text-xl);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h3 {
+      font-size: var(--text-lg);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    h4 {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    p {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+
+    label {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    button {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-medium);
+      line-height: 1.5;
+    }
+
+    input {
+      font-size: var(--text-base);
+      font-weight: var(--font-weight-normal);
+      line-height: 1.5;
+    }
+  }
+}
+
+html {
+  font-size: var(--font-size);
+}
+
+/* Hide scrollbar for mobile bottom nav */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Safe area for mobile devices with notch/home indicator */
+.safe-area-pb {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-pt {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-inset-top {
+  top: env(safe-area-inset-top);
+}
+
+/* PWA Header - Normal padding only, safe area handled by wrapper */
+header[data-pwa-header] {
+  padding-top: 0.5rem !important; /* Normal padding only */
+}
+
+/* Prose styles for RSS content */
+.prose {
+  line-height: 1.75;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+}
+
+.prose h2 {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.prose h3 {
+  margin-top: 1.6em;
+  margin-bottom: 0.6em;
+}
+
+.prose a {
+  color: #2563EB;
+  text-decoration: underline;
+}
+
+.prose a:hover {
+  color: #1d4ed8;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose img {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border-radius: 0.5rem;
+  max-width: 100% !important;
+  height: auto !important;
+  width: auto !important;
+  display: block;
+}
+
+/* Responsive video embeds */
+.prose iframe {
+  margin-top: 2em;
+  margin-bottom: 2em;
+  max-width: 100%;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+/* Wrapper for video embeds to maintain aspect ratio */
+.prose .video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  border-radius: 0.5rem;
+}
+
+.prose .video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.prose figcaption,
+.prose figure,
+.prose div,
+.prose span {
+  max-width: 100%;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  overflow: hidden;
+}
+
+.prose blockquote {
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-left: 1em;
+  border-left: 0.25rem solid #e5e7eb;
+  font-style: italic;
+}
+
+.dark .prose blockquote {
+  border-left-color: #374151;
+}
+
+.prose code {
+  background-color: #f3f4f6;
+  padding: 0.2em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.dark .prose code {
+  background-color: #1f2937;
+}
+
+/* Gradient shimmer animation */
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Toast animations */
+@keyframes slide-in-from-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+.animate-in {
+  animation-fill-mode: both;
+}
+
+.slide-in-from-right {
+  animation-name: slide-in-from-right;
+}
+
+.duration-300 {
+  animation-duration: 300ms;
+}
