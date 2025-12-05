@@ -606,17 +606,48 @@
     padding-top: env(safe-area-inset-top); /* Body handles safe-area */
     position: fixed; /* The "Twitter Hack" - locks body completely */
     inset: 0;
+    /* Performance optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   .main-scroll {
-  height: 0; /* Force flex-1 to calculate properly */
-  flex: 1 1 0%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior-y: contain;
-  width: 100%;
-}
+    height: 0; /* Force flex-1 to calculate properly */
+    flex: 1 1 0%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+    width: 100%;
+    /* Performance optimizations */
+    will-change: scroll-position;
+    transform: translateZ(0); /* Force GPU acceleration */
+  }
+  
+  /* Optimize images for better performance */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    max-width: 100%;
+    height: auto;
+  }
+  
+  /* Optimize animations */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Reduce motion for users who prefer it */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
 /**

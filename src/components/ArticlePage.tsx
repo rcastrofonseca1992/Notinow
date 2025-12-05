@@ -182,6 +182,8 @@ export function ArticlePage({
               src={article.urlToImage || ''}
               alt={article.title}
               className="w-full h-full object-cover"
+              loading="eager"
+              decoding="sync"
             />
          )}
          {/* Gradient Overlay for Text Legibility */}

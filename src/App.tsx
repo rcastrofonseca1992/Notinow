@@ -1,4 +1,3 @@
-import { ShareModal } from './components/ShareModal';
 import { projectId, publicAnonKey } from './utils/supabase/info';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useBedTimeMode } from './hooks/useBedTimeMode';
@@ -11,21 +10,24 @@ import { toast } from './utils/toast';
 import { trackPageView, Analytics } from './utils/analytics';
 import { AnalyticsScript } from './components/AnalyticsScript';
 import { ErrorBoundary } from './components/ErrorBoundary';
-import { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react';
 import { ArticleCard } from './components/ArticleCard';
 import { NewsSkeleton } from './components/NewsSkeleton';
 import { EmptyState } from './components/EmptyState';
-import { Settings } from './components/Settings';
 import { TopicNav } from './components/TopicNav';
 import { PWAHead } from './components/PWAHead';
 import { PWAStatusIndicator } from './components/PWAStatusIndicator';
 import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import { PullToRefreshIndicator } from './components/PullToRefreshIndicator';
 import { FullArticlesToggle } from './components/FullArticlesToggle';
-import { ArticlePage } from './components/ArticlePage';
 import { SafeAreaWrapper } from './components/SafeAreaWrapper';
 import { usePullToRefresh } from './hooks/usePullToRefresh';
 import { Search, X, MoreVertical, Heart } from 'lucide-react';
+
+// Lazy load heavy components for better initial load performance
+const Settings = lazy(() => import('./components/Settings').then(m => ({ default: m.Settings })));
+const ShareModal = lazy(() => import('./components/ShareModal').then(m => ({ default: m.ShareModal })));
+const ArticlePage = lazy(() => import('./components/ArticlePage').then(m => ({ default: m.ArticlePage })));
 
 function AppContent() {
   const { isDarkMode, toggleDarkMode } = useDarkMode();
@@ -150,18 +152,29 @@ function AppContent() {
     }
   }, [isArticleView]);
 
-  // Save scroll position when scrolling on home view (Internal tracking)
+  // Save scroll position when scrolling on home view (Internal tracking) - Optimized
   useEffect(() => {
     const container = mainScrollRef.current;
     if (!container) return;
 
+    let rafId: number | null = null;
     const handleScroll = () => {
-      if (!isArticleView) {
-        homeScrollRef.current = container.scrollTop;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
       }
+      rafId = requestAnimationFrame(() => {
+        if (!isArticleView) {
+          homeScrollRef.current = container.scrollTop;
+        }
+      });
     };
     container.addEventListener('scroll', handleScroll, { passive: true });
-    return () => container.removeEventListener('scroll', handleScroll);
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, [isArticleView]);
 
   // Toggle save article
@@ -313,21 +326,30 @@ function AppContent() {
     Analytics.trackEvent('settings', 'languages_changed', languages.join(','));
   }, []);
 
-  // Filter articles
+  // Filter articles - Optimized with early returns and better memoization
   const filteredArticles = useMemo(() => {
     let filtered = isSavedView ? savedArticles : articles;
+    
+    // Early return if no articles
+    if (filtered.length === 0) return [];
     
     // Filter by topics (only in Home view)
     if (!isSavedView && selectedTopics.length > 0) {
       filtered = filtered.filter(article => selectedTopics.includes(article.topic));
+      if (filtered.length === 0) return [];
     }
     
+    // Filter by languages
     filtered = filtered.filter(article => selectedLanguages.includes(article.language as Language));
+    if (filtered.length === 0) return [];
     
+    // Filter by full articles toggle
     if (fullArticlesOnly) {
       filtered = filtered.filter(article => article.hasFull);
+      if (filtered.length === 0) return [];
     }
     
+    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(article =>
@@ -387,12 +409,15 @@ function AppContent() {
     navigate({ path: 'article', params: { articleId: article.link } });
   }, [markAsRead, navigate]);
 
-  // Infinite scroll
+  // Infinite scroll - Optimized with better debouncing
   useEffect(() => {
     const container = mainScrollRef.current;
     if (isArticleView || loading || isLoadingMore || !container) {
       return;
     }
+
+    let rafId: number | null = null;
+    let lastScrollTop = 0;
 
     const handleScroll = () => {
       const scrollTop = container.scrollTop;
@@ -400,29 +425,38 @@ function AppContent() {
       const scrollHeight = container.scrollHeight;
       const distanceFromBottom = scrollHeight - (scrollTop + clientHeight);
 
+      // Only check if scrolled down significantly (performance optimization)
+      if (Math.abs(scrollTop - lastScrollTop) < 50) {
+        return;
+      }
+      lastScrollTop = scrollTop;
+
       if (distanceFromBottom < 500 && visibleCount < filteredArticles.length) {
         setIsLoadingMore(true);
-        setTimeout(() => {
+        // Use requestIdleCallback if available for better performance
+        const scheduleLoad = (window as any).requestIdleCallback || ((cb: () => void) => setTimeout(cb, 100));
+        scheduleLoad(() => {
           setVisibleCount(prev => Math.min(prev + 30, filteredArticles.length));
           setIsLoadingMore(false);
           Analytics.trackEvent('infinite_scroll', 'load_more', `count_${visibleCount + 30}`);
-        }, 300);
+        });
       }
     };
 
-    let ticking = false;
     const onScroll = () => {
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          handleScroll();
-          ticking = false;
-        });
-        ticking = true;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
       }
+      rafId = requestAnimationFrame(handleScroll);
     };
 
     container.addEventListener('scroll', onScroll, { passive: true });
-    return () => container.removeEventListener('scroll', onScroll);
+    return () => {
+      container.removeEventListener('scroll', onScroll);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+    };
   }, [isArticleView, loading, isLoadingMore, visibleCount, filteredArticles.length]);
 
   // --- RENDER HELPERS ---
@@ -456,13 +490,22 @@ function AppContent() {
     }
 
     return (
-      <ArticlePage
-        article={currentArticle}
-        onBack={goBack}
-        isSaved={savedArticles.some(a => a.link === currentArticle.link)}
-        onToggleSave={() => toggleSaveArticle(currentArticle)}
-        onShare={() => shareArticle(currentArticle)}
-      />
+      <Suspense fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-gray-200 dark:border-gray-700 border-t-blue-500 rounded-full animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading article...</p>
+          </div>
+        </div>
+      }>
+        <ArticlePage
+          article={currentArticle}
+          onBack={goBack}
+          isSaved={savedArticles.some(a => a.link === currentArticle.link)}
+          onToggleSave={() => toggleSaveArticle(currentArticle)}
+          onShare={() => shareArticle(currentArticle)}
+        />
+      </Suspense>
     );
   };
 
@@ -513,6 +556,8 @@ function AppContent() {
                 }}
                 whileHover={{ scale: 1.01 }}
                 whileTap={{ scale: 0.99 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                style={{ willChange: 'transform' }}
               >
                 <span className="text-foreground">Noti</span>
                 <span className="text-[#FBBF24] logo-accent">now</span>
@@ -534,6 +579,8 @@ function AppContent() {
                   className="p-2 rounded-lg hover:bg-muted transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  style={{ willChange: 'transform' }}
                   aria-label={isSavedView ? "Go Home" : "View Saved"}
                 >
                   <Heart className={`w-5 h-5 ${isSavedView ? 'fill-red-500 text-red-500' : 'text-foreground'}`} />
@@ -546,6 +593,8 @@ function AppContent() {
                   className="p-2 rounded-lg hover:bg-muted transition-colors"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                  style={{ willChange: 'transform' }}
                   aria-label="Settings"
                 >
                   <MoreVertical className="w-5 h-5 text-foreground" />
@@ -679,27 +728,33 @@ function AppContent() {
         </div>
       </SafeAreaWrapper>
 
-      <Settings
-        isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={toggleDarkMode}
-        isBedTimeMode={isBedTimeMode}
-        onToggleBedTimeMode={toggleBedTimeMode}
-        selectedLanguages={selectedLanguages}
-        onLanguagesChange={handleLanguagesChange}
-        fromCache={fromCache}
-        lastFetched={lastFetched}
-      />
+      <Suspense fallback={null}>
+        {isSettingsOpen && (
+          <Settings
+            isOpen={isSettingsOpen}
+            onClose={() => setIsSettingsOpen(false)}
+            isDarkMode={isDarkMode}
+            onToggleDarkMode={toggleDarkMode}
+            isBedTimeMode={isBedTimeMode}
+            onToggleBedTimeMode={toggleBedTimeMode}
+            selectedLanguages={selectedLanguages}
+            onLanguagesChange={handleLanguagesChange}
+            fromCache={fromCache}
+            lastFetched={lastFetched}
+          />
+        )}
+      </Suspense>
 
-      {shareModalData && (
-        <ShareModal
-          isOpen={shareModalOpen}
-          onClose={() => setShareModalOpen(false)}
-          url={shareModalData.url}
-          title={shareModalData.title}
-        />
-      )}
+      <Suspense fallback={null}>
+        {shareModalData && (
+          <ShareModal
+            isOpen={shareModalOpen}
+            onClose={() => setShareModalOpen(false)}
+            url={shareModalData.url}
+            title={shareModalData.title}
+          />
+        )}
+      </Suspense>
 
       {/* ARTICLE VIEW OVERLAY */}
       <AnimatePresence>
@@ -710,7 +765,11 @@ function AppContent() {
             exit={{ x: '100%', transition: { ease: "easeInOut", duration: 0.25 } }}
             transition={{ type: "spring", stiffness: 300, damping: 30, mass: 0.8 }}
             className="fixed inset-0 z-50 bg-background w-full h-full overflow-hidden"
-            style={{ willChange: 'transform' }}
+            style={{ 
+              willChange: 'transform',
+              transform: 'translateZ(0)', // Force GPU acceleration
+              backfaceVisibility: 'hidden', // Optimize rendering
+            }}
           >
             <SafeAreaWrapper className="h-full">
               {renderArticleView()}

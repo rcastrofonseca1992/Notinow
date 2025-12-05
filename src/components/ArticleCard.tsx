@@ -70,9 +70,10 @@ export const ArticleCard = memo(function ArticleCard({
     <motion.article
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.2, ease: 'easeOut' }}
       onClick={onClick}
       className={`group cursor-pointer bg-transparent rounded-xl md:hover:bg-card/50 transition-colors flex gap-4 h-full ${isRead ? 'opacity-75' : ''}`}
+      style={{ willChange: 'transform, opacity' }}
     >
       {/* Image - Left side, square aspect ratio, rounded corners */}
       <div className="relative flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-xl overflow-hidden shadow-sm">
@@ -83,6 +84,7 @@ export const ArticleCard = memo(function ArticleCard({
                 src={finalImageSrc}
                 alt={article.title}
                 loading="lazy"
+                decoding="async"
                 className={`w-full h-full object-cover transition-transform duration-300 md:group-hover:scale-105 ${isRead ? 'grayscale-[0.5]' : ''}`}
               />
             </div>
