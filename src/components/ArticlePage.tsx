@@ -8,6 +8,7 @@ import { Slider } from './ui/slider';
 import { motion, AnimatePresence } from 'motion/react';
 import { TopicBadge } from './TopicBadge';
 import { SourceBadge } from './SourceBadge';
+import { useSwipeBack } from '../hooks/useSwipeBack';
 
 interface ArticlePageProps {
   article: Article;
@@ -70,6 +71,21 @@ export function ArticlePage({
   const [fontSize, setFontSize] = useState(READER_SETTINGS.DEFAULT_FONT_SIZE);
   const [showFontControls, setShowFontControls] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // iOS-style swipe back gesture
+  const { ref: swipeBackRef, x, opacity, scale } = useSwipeBack({
+    onSwipeBack: onBack,
+    enabled: true,
+    threshold: 100,
+  });
+
+  // Combine refs
+  useEffect(() => {
+    if (containerRef.current) {
+      swipeBackRef(containerRef.current);
+    }
+  }, [swipeBackRef]);
 
   // Load saved font size
   useEffect(() => {
@@ -85,7 +101,16 @@ export function ArticlePage({
   const sanitizedContent = article.contentHtml ? sanitizeHTML(article.contentHtml) : null;
 
   return (
-    <div className="relative min-h-screen bg-background">
+    <motion.div 
+      ref={containerRef}
+      className="relative min-h-screen bg-background"
+      style={{ 
+        x,
+        opacity,
+        scale,
+        touchAction: 'pan-y', // Allow vertical scrolling, handle horizontal swipe
+      }}
+    >
       {/* Fixed Header Actions */}
       <header className="fixed top-0 inset-x-0 z-50 px-4 pb-4 pt-[calc(1rem+env(safe-area-inset-top))] flex items-center justify-between pointer-events-none">
         {/* Back Button */}
@@ -287,6 +312,6 @@ export function ArticlePage({
            </article>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

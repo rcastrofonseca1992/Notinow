@@ -623,6 +623,18 @@
     /* Performance optimizations */
     will-change: scroll-position;
     transform: translateZ(0); /* Force GPU acceleration */
+    /* Native gesture support */
+    touch-action: pan-y; /* Allow vertical scrolling, handle horizontal gestures */
+  }
+  
+  /* Enable native swipe gestures */
+  article, [role="article"] {
+    touch-action: pan-y pinch-zoom; /* Allow vertical scroll and pinch zoom */
+  }
+  
+  /* Swipeable cards */
+  [data-swipeable] {
+    touch-action: pan-y;
   }
   
   /* Optimize images for better performance */

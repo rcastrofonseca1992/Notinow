@@ -12,6 +12,7 @@ import { AnalyticsScript } from './components/AnalyticsScript';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react';
 import { ArticleCard } from './components/ArticleCard';
+import { SwipeableArticleCard } from './components/SwipeableArticleCard';
 import { NewsSkeleton } from './components/NewsSkeleton';
 import { EmptyState } from './components/EmptyState';
 import { TopicNav } from './components/TopicNav';
@@ -659,7 +660,7 @@ function AppContent() {
               <>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {filteredArticles.slice(0, visibleCount).map((article, index) => (
-                    <ArticleCard
+                    <SwipeableArticleCard
                       key={`${article.link}-${index}`}
                       article={article}
                       onClick={() => handleArticleClick(article)}
