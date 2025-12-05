@@ -69,7 +69,6 @@ export default defineConfig({
             '@radix-ui/react-accordion',
           ],
           'ui-vendor': ['lucide-react', 'clsx', 'tailwind-merge'],
-          'supabase-vendor': ['@jsr/supabase__supabase-js'],
         },
         // Optimize chunk file names
         chunkFileNames: 'assets/js/[name]-[hash].js',
@@ -79,14 +78,12 @@ export default defineConfig({
     },
     // Optimize chunk size
     chunkSizeWarningLimit: 1000,
-    // Enable minification
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true, // Remove console.log in production
-        drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug'],
-      },
+    // Enable minification with esbuild (faster than terser, built-in)
+    minify: 'esbuild',
+    // esbuild options for production
+    esbuild: {
+      drop: ['console', 'debugger'], // Remove console.log and debugger in production
+      legalComments: 'none', // Remove comments
     },
     // Enable source maps for production debugging (optional, can disable for smaller builds)
     sourcemap: false,
