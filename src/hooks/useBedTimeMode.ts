@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { Analytics } from '../utils/analytics';
 
 /**
  * Custom hook for Bed Time Mode management
@@ -63,11 +62,6 @@ export function useBedTimeMode() {
   const toggleBedTimeMode = () => {
     const newState = !isBedTimeMode;
     setIsBedTimeMode(newState);
-    
-    // Track analytics
-    Analytics.trackEvent('feature', 'bed_time_mode_toggled', newState ? 'enabled' : 'disabled', {
-      timeOfDay: new Date().getHours(),
-    });
   };
 
   return { 

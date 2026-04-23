@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { X, Download, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { isPWAInstalled, getPlatformInfo } from '../utils/pwa';
-import { Analytics } from '../utils/analytics';
 
 /**
  * PWA Install Prompt Component
@@ -45,7 +44,6 @@ export function PWAInstallPrompt() {
       // Show iOS prompt after a short delay
       setTimeout(() => {
         setShowPrompt(true);
-        Analytics.pwaInstallPrompted();
       }, 3000);
     } else if (platformInfo.isAndroid) {
       setPlatform('android');
@@ -56,7 +54,6 @@ export function PWAInstallPrompt() {
         setDeferredPrompt(e);
         setTimeout(() => {
           setShowPrompt(true);
-          Analytics.pwaInstallPrompted();
         }, 3000);
       };
       
@@ -76,9 +73,6 @@ export function PWAInstallPrompt() {
       
       if (outcome === 'accepted') {
         console.log('User accepted the install prompt');
-        Analytics.pwaInstallAccepted();
-      } else {
-        Analytics.pwaInstallDismissed();
       }
       
       setDeferredPrompt(null);
@@ -90,7 +84,6 @@ export function PWAInstallPrompt() {
   const handleDismiss = () => {
     setShowPrompt(false);
     localStorage.setItem('pwa-install-dismissed', Date.now().toString());
-    Analytics.pwaInstallDismissed();
   };
   
   return (

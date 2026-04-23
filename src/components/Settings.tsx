@@ -1,7 +1,5 @@
-import { X, Moon, Sun, Languages, Info, BarChart3, BookOpen, Rss, Mail } from 'lucide-react';
-import { Analytics } from '../utils/analytics';
+import { X, Moon, Sun, Languages, Info, BookOpen, Rss, Mail } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from './ui/accordion';
-import { projectId, publicAnonKey } from '../utils/supabase/info';
 import { useState, useEffect, memo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -64,11 +62,7 @@ export const Settings = memo(function Settings({
   const fetchFeedStats = async () => {
     setLoadingFeeds(true);
     try {
-      const response = await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-b78002f5/feeds/stats`, {
-        headers: {
-          'Authorization': `Bearer ${publicAnonKey}`,
-        },
-      });
+      const response = await fetch('/api/feeds/stats');
       if (response.ok) {
         const data = await response.json();
         setFeedStats(data);
@@ -233,7 +227,6 @@ export const Settings = memo(function Settings({
                       onClick={() => {
                         if (!isBedTimeMode) {
                           onToggleDarkMode();
-                          Analytics.darkModeToggled(!isDarkMode);
                         }
                       }}
                       disabled={isBedTimeMode}
@@ -349,7 +342,7 @@ export const Settings = memo(function Settings({
               {/* RSS Sources Section */}
               <section>
                 <div className="flex items-center gap-2 mb-4">
-                  <BarChart3 className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+                  <Rss className="w-5 h-5 text-gray-700 dark:text-gray-300" />
                   <h3 className="font-medium text-gray-900 dark:text-gray-100">RSS Sources</h3>
                 </div>
                 

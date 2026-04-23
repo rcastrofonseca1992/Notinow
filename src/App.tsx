@@ -1,4 +1,3 @@
-import { projectId, publicAnonKey } from './utils/supabase/info';
 import { useDarkMode } from './hooks/useDarkMode';
 import { useBedTimeMode } from './hooks/useBedTimeMode';
 import { useReadArticles } from './hooks/useReadArticles';
@@ -7,8 +6,6 @@ import { Article, Topic, Language } from './types';
 import { API_CONFIG, TOPICS, APP_CONFIG } from './constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from './utils/toast';
-import { trackPageView, Analytics } from './utils/analytics';
-import { AnalyticsScript } from './components/AnalyticsScript';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { useState, useEffect, useMemo, useCallback, useRef, useLayoutEffect, lazy, Suspense } from 'react';
 import { ArticleCard } from './components/ArticleCard';
@@ -75,8 +72,6 @@ function AppContent() {
 
   // Track initial pageview and log PWA status (debug)
   useEffect(() => {
-    trackPageView();
-    
     // Fix 1: Force a micro-reflow on load to fix iOS PWA hitbox drift
     setTimeout(() => {
       document.documentElement.style.height = '100dvh';
@@ -192,21 +187,12 @@ function AppContent() {
         icon: isSaved ? '💔' : '❤️',
       });
       
-      // Track analytics
-      if (isSaved) {
-        Analytics.articleUnsaved({ title: article.title, source: article.source });
-      } else {
-        Analytics.articleSaved({ title: article.title, source: article.source });
-      }
-      
       return updated;
     });
   }, []);
 
   // Share article
   const shareArticle = useCallback((article: Article) => {
-    Analytics.articleShared({ title: article.title, source: article.source });
-    
     // Use the original article link for sharing - cleaner and more trustworthy
     const shareUrl = article.link;
     
@@ -248,15 +234,11 @@ function AppContent() {
 
     try {
       // Always fetch all news ('today') and filter client-side
-      const url = `https://${projectId}.supabase.co/functions/v1/make-server-b78002f5/rss-news?topic=today`;
+      const url = `/api/rss-news?topic=today`;
       
       console.log('Fetching all RSS news');
 
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
-      });
+      const response = await fetch(url);
 
       const data = await response.json();
 
@@ -293,38 +275,19 @@ function AppContent() {
 
   // Manual refresh
   const handleRefresh = useCallback(async (source: 'pull' | 'button' = 'button') => {
-    if (source === 'pull') {
-      Analytics.pullToRefresh();
-    } else {
-      Analytics.refreshClicked();
-    }
-    
-    try {
-      await fetch(`https://${projectId}.supabase.co/functions/v1/make-server-b78002f5/clear-cache`, {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${publicAnonKey}`,
-        },
-      });
-    } catch (e) {
-      console.error('Failed to clear cache:', e);
-    }
-    
-    fetchNews();
+    await fetchNews();
   }, [fetchNews]);
 
   // Handle full articles toggle
   const handleFullArticlesToggle = useCallback((enabled: boolean) => {
     setFullArticlesOnly(enabled);
     localStorage.setItem('fullArticlesOnly', JSON.stringify(enabled));
-    Analytics.fullArticlesToggled(enabled);
   }, []);
 
   // Handle language change
   const handleLanguagesChange = useCallback((languages: Language[]) => {
     setSelectedLanguages(languages);
     localStorage.setItem('selectedLanguages', JSON.stringify(languages));
-    Analytics.trackEvent('settings', 'languages_changed', languages.join(','));
   }, []);
 
   // Filter articles - Optimized with early returns and better memoization
@@ -378,7 +341,6 @@ function AppContent() {
     if (mainScrollRef.current) {
       mainScrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    Analytics.trackEvent('navigation', 'topic_toggled', topic);
   }, []);
 
   // Get current article
@@ -402,11 +364,6 @@ function AppContent() {
   // Handle article click
   const handleArticleClick = useCallback((article: Article) => {
     markAsRead(article.link);
-    Analytics.articleOpened({
-      title: article.title,
-      source: article.source,
-      topic: article.topic,
-    });
     navigate({ path: 'article', params: { articleId: article.link } });
   }, [markAsRead, navigate]);
 
@@ -439,7 +396,6 @@ function AppContent() {
         scheduleLoad(() => {
           setVisibleCount(prev => Math.min(prev + 30, filteredArticles.length));
           setIsLoadingMore(false);
-          Analytics.trackEvent('infinite_scroll', 'load_more', `count_${visibleCount + 30}`);
         });
       }
     };
@@ -512,8 +468,6 @@ function AppContent() {
 
   return (
     <>
-      <AnalyticsScript />
-      
       {/* Dynamic PWA Head */}
       <PWAHead article={isArticleView && currentArticle ? {
         title: currentArticle.title,
@@ -589,7 +543,6 @@ function AppContent() {
                 <motion.button
                   onClick={() => {
                     setIsSettingsOpen(true);
-                    Analytics.settingsOpened();
                   }}
                   className="p-2 rounded-lg hover:bg-muted transition-colors"
                   whileHover={{ scale: 1.05 }}
