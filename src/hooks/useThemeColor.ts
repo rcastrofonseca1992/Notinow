@@ -16,10 +16,10 @@ export function useThemeColor(isDarkMode: boolean) {
   useEffect(() => {
     const themeColor = isDarkMode ? PWA_CONFIG.themeColor.dark : PWA_CONFIG.themeColor.light;
     
-    // Update theme-color meta tag
-    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-    if (metaThemeColor) {
-      metaThemeColor.setAttribute('content', themeColor);
+    // Update all theme-color tags (covers browsers that keep multiple entries)
+    const metaThemeColors = document.querySelectorAll('meta[name="theme-color"]');
+    if (metaThemeColors.length > 0) {
+      metaThemeColors.forEach((tag) => tag.setAttribute('content', themeColor));
     }
     
     // Update msapplication-navbutton-color
@@ -32,6 +32,12 @@ export function useThemeColor(isDarkMode: boolean) {
     const msTileColor = document.querySelector('meta[name="msapplication-TileColor"]');
     if (msTileColor) {
       msTileColor.setAttribute('content', themeColor);
+    }
+
+    // Update iOS status bar style to match light/dark mode
+    const appleStatusBar = document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]');
+    if (appleStatusBar) {
+      appleStatusBar.setAttribute('content', isDarkMode ? 'black-translucent' : 'default');
     }
     
     // Update manifest with new theme and favicon icon
