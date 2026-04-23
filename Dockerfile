@@ -1,15 +1,19 @@
-# Step 1: Build stage
-FROM node:lts-alpine as build
+FROM node:lts-alpine
 WORKDIR /app
+
+# Copy package files and install ALL dependencies
 COPY package*.json ./
 RUN npm install
-COPY . .
-# Run build and then list files to debug if it fails again
-RUN npm run build && ls -la
 
-# Step 2: Serve stage
-FROM nginx:alpine
-# Check if your output is 'dist' or 'build'. Change below if needed.
-COPY --from=build /app/dist /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+# Copy all your source code (including /server and /src)
+COPY . .
+
+# Build the frontend (this creates the /build folder)
+RUN npm run build
+
+# Expose the port your backend runs on (8787 based on your logs)
+EXPOSE 8787
+
+# Command to run your production server. 
+# Note: Check your package.json. If your start script is different, change this!
+CMD ["npm", "run", "start"]
