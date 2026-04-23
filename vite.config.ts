@@ -99,7 +99,9 @@ export default defineConfig({
     exclude: ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu'],
   },
   server: {
+    host: true,
     port: 3000,
+    allowedHosts: ['news.notinow.xyz'],
     open: true,
     proxy: {
       '/api': {
