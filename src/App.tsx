@@ -239,8 +239,16 @@ function AppContent() {
       console.log('Fetching all RSS news');
 
       const response = await fetch(url);
-
-      const data = await response.json();
+      const contentType = response.headers.get('content-type') || '';
+      let data: any;
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const raw = await response.text();
+        throw new Error(
+          `API returned non-JSON response from ${url}. Check that /api routes are served by the Node server. First bytes: ${raw.slice(0, 120)}`
+        );
+      }
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to fetch news');

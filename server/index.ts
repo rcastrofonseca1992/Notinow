@@ -256,6 +256,10 @@ app.get('/api/rss-news', async (c) => {
   return c.json(payload);
 });
 
+app.all('/api/*', (c) => {
+  return c.json({ error: `API route not found: ${c.req.path}` }, 404);
+});
+
 app.use('*', serveStatic({ root: './build' }));
 app.get('*', serveStatic({ path: './build/index.html' }));
 
