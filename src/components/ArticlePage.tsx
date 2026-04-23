@@ -192,6 +192,11 @@ export function ArticlePage({
       </AnimatePresence>
 
       {/* Fixed Image Background */}
+      {/* Keep the status-bar/safe-area background aligned with app theme */}
+      <div
+        className="fixed top-0 inset-x-0 z-10 bg-background pointer-events-none"
+        style={{ height: 'calc(env(safe-area-inset-top) + 8px)' }}
+      />
       <div className="fixed inset-x-0 top-0 h-[55vh] z-0">
          {article.videoUrl ? (
             <video

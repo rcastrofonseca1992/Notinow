@@ -70,6 +70,14 @@ function AppContent() {
   const homeScrollRef = useRef(0);
   const mainScrollRef = useRef<HTMLDivElement>(null);
 
+  // Keep status bar theme color stable across route transitions.
+  useEffect(() => {
+    const themeColor = isBedTimeMode ? '#000000' : (isDarkMode ? '#0F172A' : '#F8F9FA');
+    document.querySelectorAll('meta[name="theme-color"]').forEach((tag) => {
+      tag.setAttribute('content', themeColor);
+    });
+  }, [isArticleView, isDarkMode, isBedTimeMode]);
+
   // Track initial pageview and log PWA status (debug)
   useEffect(() => {
     // Fix 1: Force a micro-reflow on load to fix iOS PWA hitbox drift
